@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "preserve",
+    "moduleResolution": "bundler",
+    "composite": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "src/main",
+    "src/preload",
+    "package.json",
+    "vite.config.mts",
+    "buildAssets/builder",
+    "tests/**/*.ts",
+    "tests/**/*.mts",
+    "tests/**/*.spec.ts"
+  ]
+}
