@@ -11,169 +11,237 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as LayoutIndexImport } from './routes/_layout/index'
-import { Route as LayoutUserImport } from './routes/_layout/user'
-import { Route as LayoutSettingsImport } from './routes/_layout/settings'
-import { Route as LayoutProfileImport } from './routes/_layout/profile'
-import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as WelcomeImport } from './routes/welcome'
+import { Route as IndexImport } from './routes/index'
+import { Route as ProjectsIndexImport } from './routes/projects/index'
+import { Route as WelcomeSettingsImport } from './routes/welcome/settings'
+import { Route as WelcomeProjectsImport } from './routes/welcome/projects'
+import { Route as WelcomeProfileImport } from './routes/welcome/profile'
+import { Route as ProjectsProjectIdImport } from './routes/projects/$projectId'
+import { Route as ProjectsProjectIdMergerOrgIdImport } from './routes/projects/$projectId/merger/$orgId'
 
 // Create/Update Routes
 
-const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
+const WelcomeRoute = WelcomeImport.update({
+  id: '/welcome',
+  path: '/welcome',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutIndexRoute = LayoutIndexImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutUserRoute = LayoutUserImport.update({
-  id: '/user',
-  path: '/user',
-  getParentRoute: () => LayoutRoute,
+const ProjectsIndexRoute = ProjectsIndexImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutSettingsRoute = LayoutSettingsImport.update({
+const WelcomeSettingsRoute = WelcomeSettingsImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
-const LayoutProfileRoute = LayoutProfileImport.update({
+const WelcomeProjectsRoute = WelcomeProjectsImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => WelcomeRoute,
+} as any)
+
+const WelcomeProfileRoute = WelcomeProfileImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
-const LayoutAdminRoute = LayoutAdminImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => LayoutRoute,
+const ProjectsProjectIdRoute = ProjectsProjectIdImport.update({
+  id: '/projects/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => rootRoute,
 } as any)
+
+const ProjectsProjectIdMergerOrgIdRoute =
+  ProjectsProjectIdMergerOrgIdImport.update({
+    id: '/merger/$orgId',
+    path: '/merger/$orgId',
+    getParentRoute: () => ProjectsProjectIdRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/admin': {
-      id: '/_layout/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof LayoutAdminImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/profile': {
-      id: '/_layout/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof LayoutProfileImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/settings': {
-      id: '/_layout/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof LayoutSettingsImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/user': {
-      id: '/_layout/user'
-      path: '/user'
-      fullPath: '/user'
-      preLoaderRoute: typeof LayoutUserImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexImport
-      parentRoute: typeof LayoutImport
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeImport
+      parentRoute: typeof rootRoute
+    }
+    '/projects/$projectId': {
+      id: '/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof ProjectsProjectIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/welcome/profile': {
+      id: '/welcome/profile'
+      path: '/profile'
+      fullPath: '/welcome/profile'
+      preLoaderRoute: typeof WelcomeProfileImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/projects': {
+      id: '/welcome/projects'
+      path: '/projects'
+      fullPath: '/welcome/projects'
+      preLoaderRoute: typeof WelcomeProjectsImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/settings': {
+      id: '/welcome/settings'
+      path: '/settings'
+      fullPath: '/welcome/settings'
+      preLoaderRoute: typeof WelcomeSettingsImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/projects/$projectId/merger/$orgId': {
+      id: '/projects/$projectId/merger/$orgId'
+      path: '/merger/$orgId'
+      fullPath: '/projects/$projectId/merger/$orgId'
+      preLoaderRoute: typeof ProjectsProjectIdMergerOrgIdImport
+      parentRoute: typeof ProjectsProjectIdImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface LayoutRouteChildren {
-  LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutProfileRoute: typeof LayoutProfileRoute
-  LayoutSettingsRoute: typeof LayoutSettingsRoute
-  LayoutUserRoute: typeof LayoutUserRoute
-  LayoutIndexRoute: typeof LayoutIndexRoute
+interface WelcomeRouteChildren {
+  WelcomeProfileRoute: typeof WelcomeProfileRoute
+  WelcomeProjectsRoute: typeof WelcomeProjectsRoute
+  WelcomeSettingsRoute: typeof WelcomeSettingsRoute
 }
 
-const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutAdminRoute: LayoutAdminRoute,
-  LayoutProfileRoute: LayoutProfileRoute,
-  LayoutSettingsRoute: LayoutSettingsRoute,
-  LayoutUserRoute: LayoutUserRoute,
-  LayoutIndexRoute: LayoutIndexRoute,
+const WelcomeRouteChildren: WelcomeRouteChildren = {
+  WelcomeProfileRoute: WelcomeProfileRoute,
+  WelcomeProjectsRoute: WelcomeProjectsRoute,
+  WelcomeSettingsRoute: WelcomeSettingsRoute,
 }
 
-const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
+const WelcomeRouteWithChildren =
+  WelcomeRoute._addFileChildren(WelcomeRouteChildren)
+
+interface ProjectsProjectIdRouteChildren {
+  ProjectsProjectIdMergerOrgIdRoute: typeof ProjectsProjectIdMergerOrgIdRoute
+}
+
+const ProjectsProjectIdRouteChildren: ProjectsProjectIdRouteChildren = {
+  ProjectsProjectIdMergerOrgIdRoute: ProjectsProjectIdMergerOrgIdRoute,
+}
+
+const ProjectsProjectIdRouteWithChildren =
+  ProjectsProjectIdRoute._addFileChildren(ProjectsProjectIdRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof LayoutRouteWithChildren
-  '/admin': typeof LayoutAdminRoute
-  '/profile': typeof LayoutProfileRoute
-  '/settings': typeof LayoutSettingsRoute
-  '/user': typeof LayoutUserRoute
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/welcome': typeof WelcomeRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRouteWithChildren
+  '/welcome/profile': typeof WelcomeProfileRoute
+  '/welcome/projects': typeof WelcomeProjectsRoute
+  '/welcome/settings': typeof WelcomeSettingsRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$projectId/merger/$orgId': typeof ProjectsProjectIdMergerOrgIdRoute
 }
 
 export interface FileRoutesByTo {
-  '/admin': typeof LayoutAdminRoute
-  '/profile': typeof LayoutProfileRoute
-  '/settings': typeof LayoutSettingsRoute
-  '/user': typeof LayoutUserRoute
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/welcome': typeof WelcomeRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRouteWithChildren
+  '/welcome/profile': typeof WelcomeProfileRoute
+  '/welcome/projects': typeof WelcomeProjectsRoute
+  '/welcome/settings': typeof WelcomeSettingsRoute
+  '/projects': typeof ProjectsIndexRoute
+  '/projects/$projectId/merger/$orgId': typeof ProjectsProjectIdMergerOrgIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_layout': typeof LayoutRouteWithChildren
-  '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/profile': typeof LayoutProfileRoute
-  '/_layout/settings': typeof LayoutSettingsRoute
-  '/_layout/user': typeof LayoutUserRoute
-  '/_layout/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/welcome': typeof WelcomeRouteWithChildren
+  '/projects/$projectId': typeof ProjectsProjectIdRouteWithChildren
+  '/welcome/profile': typeof WelcomeProfileRoute
+  '/welcome/projects': typeof WelcomeProjectsRoute
+  '/welcome/settings': typeof WelcomeSettingsRoute
+  '/projects/': typeof ProjectsIndexRoute
+  '/projects/$projectId/merger/$orgId': typeof ProjectsProjectIdMergerOrgIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/admin' | '/profile' | '/settings' | '/user' | '/'
+  fullPaths:
+    | '/'
+    | '/welcome'
+    | '/projects/$projectId'
+    | '/welcome/profile'
+    | '/welcome/projects'
+    | '/welcome/settings'
+    | '/projects'
+    | '/projects/$projectId/merger/$orgId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/admin' | '/profile' | '/settings' | '/user' | '/'
+  to:
+    | '/'
+    | '/welcome'
+    | '/projects/$projectId'
+    | '/welcome/profile'
+    | '/welcome/projects'
+    | '/welcome/settings'
+    | '/projects'
+    | '/projects/$projectId/merger/$orgId'
   id:
     | '__root__'
-    | '/_layout'
-    | '/_layout/admin'
-    | '/_layout/profile'
-    | '/_layout/settings'
-    | '/_layout/user'
-    | '/_layout/'
+    | '/'
+    | '/welcome'
+    | '/projects/$projectId'
+    | '/welcome/profile'
+    | '/welcome/projects'
+    | '/welcome/settings'
+    | '/projects/'
+    | '/projects/$projectId/merger/$orgId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  LayoutRoute: typeof LayoutRouteWithChildren
+  IndexRoute: typeof IndexRoute
+  WelcomeRoute: typeof WelcomeRouteWithChildren
+  ProjectsProjectIdRoute: typeof ProjectsProjectIdRouteWithChildren
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRoute: LayoutRouteWithChildren,
+  IndexRoute: IndexRoute,
+  WelcomeRoute: WelcomeRouteWithChildren,
+  ProjectsProjectIdRoute: ProjectsProjectIdRouteWithChildren,
+  ProjectsIndexRoute: ProjectsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -186,38 +254,47 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_layout"
+        "/",
+        "/welcome",
+        "/projects/$projectId",
+        "/projects/"
       ]
     },
-    "/_layout": {
-      "filePath": "_layout.tsx",
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/welcome": {
+      "filePath": "welcome.tsx",
       "children": [
-        "/_layout/admin",
-        "/_layout/profile",
-        "/_layout/settings",
-        "/_layout/user",
-        "/_layout/"
+        "/welcome/profile",
+        "/welcome/projects",
+        "/welcome/settings"
       ]
     },
-    "/_layout/admin": {
-      "filePath": "_layout/admin.tsx",
-      "parent": "/_layout"
+    "/projects/$projectId": {
+      "filePath": "projects/$projectId.tsx",
+      "children": [
+        "/projects/$projectId/merger/$orgId"
+      ]
     },
-    "/_layout/profile": {
-      "filePath": "_layout/profile.tsx",
-      "parent": "/_layout"
+    "/welcome/profile": {
+      "filePath": "welcome/profile.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/settings": {
-      "filePath": "_layout/settings.tsx",
-      "parent": "/_layout"
+    "/welcome/projects": {
+      "filePath": "welcome/projects.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/user": {
-      "filePath": "_layout/user.tsx",
-      "parent": "/_layout"
+    "/welcome/settings": {
+      "filePath": "welcome/settings.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/": {
-      "filePath": "_layout/index.tsx",
-      "parent": "/_layout"
+    "/projects/": {
+      "filePath": "projects/index.tsx"
+    },
+    "/projects/$projectId/merger/$orgId": {
+      "filePath": "projects/$projectId/merger/$orgId.tsx",
+      "parent": "/projects/$projectId"
     }
   }
 }

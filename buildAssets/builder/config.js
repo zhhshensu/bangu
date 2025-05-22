@@ -8,7 +8,9 @@ const baseConfig = {
   asar: true,
   extends: null,
   compression: "maximum",
-  artifactName: "${productName} ${version}_${arch}.${ext}",
+  // https://github.com/electron-userland/electron-builder/issues/8415
+  // artifactName: "${productName} ${version}_${arch}.${ext}", // 备份。在mac商报错
+  artifactName: "${productName}-${version}-${arch}.${ext}", // 去掉空格
   directories: {
     output: "./release/${version}",
   },
@@ -22,7 +24,7 @@ const baseConfig = {
     target: [
       {
         target: "dmg",
-        arch: ["x64", "arm64", "universal"],
+        arch: ["x64", "arm64"],
       },
     ],
   },
@@ -45,10 +47,10 @@ const baseConfig = {
   win: {
     icon: "buildAssets/icons/icon.ico",
     target: [
-      {
-        target: "appx",
-        arch: "x64",
-      },
+      // {
+      //   target: "appx",
+      //   arch: "x64",
+      // },
       {
         target: "zip",
         arch: "x64",
@@ -64,7 +66,7 @@ const baseConfig = {
     ],
   },
   portable: {
-    artifactName: "${productName} ${version}_${arch} Portable.${ext}",
+    artifactName: "${productName}-${version}-${arch}-Portable.${ext}",
   },
   nsis: {
     oneClick: true,
