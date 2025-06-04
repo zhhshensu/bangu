@@ -1,11 +1,18 @@
 import { createFileRoute, redirect, useLocation, useNavigate } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
 import { Button, Menu, Layout, Avatar } from "antd";
-import { LayoutGrid, PanelLeft, Settings } from "lucide-react";
+import {
+  AudioLines,
+  CloudUpload,
+  LayoutDashboard,
+  LayoutGrid,
+  PanelLeft,
+  Settings,
+  SquarePlay,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import Sidebar from "../components/projects/components/Siderbar/index";
+import Sidebar from "../components/common/Sidebar";
 import { UserOutlined } from "@ant-design/icons";
-import NavSettings from "../components/settings";
 
 const { Sider, Content } = Layout;
 
@@ -20,10 +27,28 @@ function RouteComponent() {
   const [activeKey, setActiveKey] = useState("projects");
   const topItems = [
     {
-      key: "projects",
-      icon: <LayoutGrid />,
-      title: "全部项目",
-      label: "全部项目",
+      key: "dashboard",
+      icon: <LayoutDashboard />,
+      title: "概览",
+      label: "概览",
+    },
+    {
+      key: "voice-upload",
+      icon: <CloudUpload />,
+      title: "语音上传",
+      label: "语音上传",
+    },
+    {
+      key: "voice-clone",
+      icon: <AudioLines />,
+      title: "克隆工作室",
+      label: "克隆工作室",
+    },
+    {
+      key: "voice-library",
+      icon: <SquarePlay />,
+      title: "声音库",
+      label: "声音库",
     },
   ];
 
@@ -39,7 +64,7 @@ function RouteComponent() {
   useEffect(() => {
     if (location.pathname === "/welcome") {
       navigate({
-        to: "/welcome/projects",
+        to: "/welcome/dashboard",
       });
     }
   }, [location]);
@@ -105,6 +130,8 @@ function RouteComponent() {
       <Content
         style={{
           background: "var(--background-page-background-web)",
+          height: "100%",
+          overflow: "auto",
         }}
       >
         <div className="flex">

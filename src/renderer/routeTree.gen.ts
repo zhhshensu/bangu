@@ -12,13 +12,17 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as WelcomeImport } from './routes/welcome'
+import { Route as SignUpImport } from './routes/sign-up'
+import { Route as SignInImport } from './routes/sign-in'
+import { Route as ForgetPasswordImport } from './routes/forget-password'
 import { Route as IndexImport } from './routes/index'
-import { Route as ProjectsIndexImport } from './routes/projects/index'
+import { Route as WelcomeVoiceUploadImport } from './routes/welcome/voice-upload'
+import { Route as WelcomeVoiceLibraryImport } from './routes/welcome/voice-library'
+import { Route as WelcomeVoiceCloneImport } from './routes/welcome/voice-clone'
 import { Route as WelcomeSettingsImport } from './routes/welcome/settings'
 import { Route as WelcomeProjectsImport } from './routes/welcome/projects'
 import { Route as WelcomeProfileImport } from './routes/welcome/profile'
-import { Route as ProjectsProjectIdImport } from './routes/projects/$projectId'
-import { Route as ProjectsProjectIdMergerOrgIdImport } from './routes/projects/$projectId/merger/$orgId'
+import { Route as WelcomeDashboardImport } from './routes/welcome/dashboard'
 
 // Create/Update Routes
 
@@ -28,16 +32,46 @@ const WelcomeRoute = WelcomeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SignUpRoute = SignUpImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SignInRoute = SignInImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ForgetPasswordRoute = ForgetPasswordImport.update({
+  id: '/forget-password',
+  path: '/forget-password',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProjectsIndexRoute = ProjectsIndexImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => rootRoute,
+const WelcomeVoiceUploadRoute = WelcomeVoiceUploadImport.update({
+  id: '/voice-upload',
+  path: '/voice-upload',
+  getParentRoute: () => WelcomeRoute,
+} as any)
+
+const WelcomeVoiceLibraryRoute = WelcomeVoiceLibraryImport.update({
+  id: '/voice-library',
+  path: '/voice-library',
+  getParentRoute: () => WelcomeRoute,
+} as any)
+
+const WelcomeVoiceCloneRoute = WelcomeVoiceCloneImport.update({
+  id: '/voice-clone',
+  path: '/voice-clone',
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
 const WelcomeSettingsRoute = WelcomeSettingsImport.update({
@@ -58,18 +92,11 @@ const WelcomeProfileRoute = WelcomeProfileImport.update({
   getParentRoute: () => WelcomeRoute,
 } as any)
 
-const ProjectsProjectIdRoute = ProjectsProjectIdImport.update({
-  id: '/projects/$projectId',
-  path: '/projects/$projectId',
-  getParentRoute: () => rootRoute,
+const WelcomeDashboardRoute = WelcomeDashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => WelcomeRoute,
 } as any)
-
-const ProjectsProjectIdMergerOrgIdRoute =
-  ProjectsProjectIdMergerOrgIdImport.update({
-    id: '/merger/$orgId',
-    path: '/merger/$orgId',
-    getParentRoute: () => ProjectsProjectIdRoute,
-  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -82,6 +109,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/forget-password': {
+      id: '/forget-password'
+      path: '/forget-password'
+      fullPath: '/forget-password'
+      preLoaderRoute: typeof ForgetPasswordImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpImport
+      parentRoute: typeof rootRoute
+    }
     '/welcome': {
       id: '/welcome'
       path: '/welcome'
@@ -89,12 +137,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId': {
-      id: '/projects/$projectId'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof ProjectsProjectIdImport
-      parentRoute: typeof rootRoute
+    '/welcome/dashboard': {
+      id: '/welcome/dashboard'
+      path: '/dashboard'
+      fullPath: '/welcome/dashboard'
+      preLoaderRoute: typeof WelcomeDashboardImport
+      parentRoute: typeof WelcomeImport
     }
     '/welcome/profile': {
       id: '/welcome/profile'
@@ -117,19 +165,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeSettingsImport
       parentRoute: typeof WelcomeImport
     }
-    '/projects/': {
-      id: '/projects/'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsIndexImport
-      parentRoute: typeof rootRoute
+    '/welcome/voice-clone': {
+      id: '/welcome/voice-clone'
+      path: '/voice-clone'
+      fullPath: '/welcome/voice-clone'
+      preLoaderRoute: typeof WelcomeVoiceCloneImport
+      parentRoute: typeof WelcomeImport
     }
-    '/projects/$projectId/merger/$orgId': {
-      id: '/projects/$projectId/merger/$orgId'
-      path: '/merger/$orgId'
-      fullPath: '/projects/$projectId/merger/$orgId'
-      preLoaderRoute: typeof ProjectsProjectIdMergerOrgIdImport
-      parentRoute: typeof ProjectsProjectIdImport
+    '/welcome/voice-library': {
+      id: '/welcome/voice-library'
+      path: '/voice-library'
+      fullPath: '/welcome/voice-library'
+      preLoaderRoute: typeof WelcomeVoiceLibraryImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/voice-upload': {
+      id: '/welcome/voice-upload'
+      path: '/voice-upload'
+      fullPath: '/welcome/voice-upload'
+      preLoaderRoute: typeof WelcomeVoiceUploadImport
+      parentRoute: typeof WelcomeImport
     }
   }
 }
@@ -137,111 +192,134 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface WelcomeRouteChildren {
+  WelcomeDashboardRoute: typeof WelcomeDashboardRoute
   WelcomeProfileRoute: typeof WelcomeProfileRoute
   WelcomeProjectsRoute: typeof WelcomeProjectsRoute
   WelcomeSettingsRoute: typeof WelcomeSettingsRoute
+  WelcomeVoiceCloneRoute: typeof WelcomeVoiceCloneRoute
+  WelcomeVoiceLibraryRoute: typeof WelcomeVoiceLibraryRoute
+  WelcomeVoiceUploadRoute: typeof WelcomeVoiceUploadRoute
 }
 
 const WelcomeRouteChildren: WelcomeRouteChildren = {
+  WelcomeDashboardRoute: WelcomeDashboardRoute,
   WelcomeProfileRoute: WelcomeProfileRoute,
   WelcomeProjectsRoute: WelcomeProjectsRoute,
   WelcomeSettingsRoute: WelcomeSettingsRoute,
+  WelcomeVoiceCloneRoute: WelcomeVoiceCloneRoute,
+  WelcomeVoiceLibraryRoute: WelcomeVoiceLibraryRoute,
+  WelcomeVoiceUploadRoute: WelcomeVoiceUploadRoute,
 }
 
 const WelcomeRouteWithChildren =
   WelcomeRoute._addFileChildren(WelcomeRouteChildren)
 
-interface ProjectsProjectIdRouteChildren {
-  ProjectsProjectIdMergerOrgIdRoute: typeof ProjectsProjectIdMergerOrgIdRoute
-}
-
-const ProjectsProjectIdRouteChildren: ProjectsProjectIdRouteChildren = {
-  ProjectsProjectIdMergerOrgIdRoute: ProjectsProjectIdMergerOrgIdRoute,
-}
-
-const ProjectsProjectIdRouteWithChildren =
-  ProjectsProjectIdRoute._addFileChildren(ProjectsProjectIdRouteChildren)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forget-password': typeof ForgetPasswordRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/welcome': typeof WelcomeRouteWithChildren
-  '/projects/$projectId': typeof ProjectsProjectIdRouteWithChildren
+  '/welcome/dashboard': typeof WelcomeDashboardRoute
   '/welcome/profile': typeof WelcomeProfileRoute
   '/welcome/projects': typeof WelcomeProjectsRoute
   '/welcome/settings': typeof WelcomeSettingsRoute
-  '/projects': typeof ProjectsIndexRoute
-  '/projects/$projectId/merger/$orgId': typeof ProjectsProjectIdMergerOrgIdRoute
+  '/welcome/voice-clone': typeof WelcomeVoiceCloneRoute
+  '/welcome/voice-library': typeof WelcomeVoiceLibraryRoute
+  '/welcome/voice-upload': typeof WelcomeVoiceUploadRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forget-password': typeof ForgetPasswordRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/welcome': typeof WelcomeRouteWithChildren
-  '/projects/$projectId': typeof ProjectsProjectIdRouteWithChildren
+  '/welcome/dashboard': typeof WelcomeDashboardRoute
   '/welcome/profile': typeof WelcomeProfileRoute
   '/welcome/projects': typeof WelcomeProjectsRoute
   '/welcome/settings': typeof WelcomeSettingsRoute
-  '/projects': typeof ProjectsIndexRoute
-  '/projects/$projectId/merger/$orgId': typeof ProjectsProjectIdMergerOrgIdRoute
+  '/welcome/voice-clone': typeof WelcomeVoiceCloneRoute
+  '/welcome/voice-library': typeof WelcomeVoiceLibraryRoute
+  '/welcome/voice-upload': typeof WelcomeVoiceUploadRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/forget-password': typeof ForgetPasswordRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/welcome': typeof WelcomeRouteWithChildren
-  '/projects/$projectId': typeof ProjectsProjectIdRouteWithChildren
+  '/welcome/dashboard': typeof WelcomeDashboardRoute
   '/welcome/profile': typeof WelcomeProfileRoute
   '/welcome/projects': typeof WelcomeProjectsRoute
   '/welcome/settings': typeof WelcomeSettingsRoute
-  '/projects/': typeof ProjectsIndexRoute
-  '/projects/$projectId/merger/$orgId': typeof ProjectsProjectIdMergerOrgIdRoute
+  '/welcome/voice-clone': typeof WelcomeVoiceCloneRoute
+  '/welcome/voice-library': typeof WelcomeVoiceLibraryRoute
+  '/welcome/voice-upload': typeof WelcomeVoiceUploadRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forget-password'
+    | '/sign-in'
+    | '/sign-up'
     | '/welcome'
-    | '/projects/$projectId'
+    | '/welcome/dashboard'
     | '/welcome/profile'
     | '/welcome/projects'
     | '/welcome/settings'
-    | '/projects'
-    | '/projects/$projectId/merger/$orgId'
+    | '/welcome/voice-clone'
+    | '/welcome/voice-library'
+    | '/welcome/voice-upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forget-password'
+    | '/sign-in'
+    | '/sign-up'
     | '/welcome'
-    | '/projects/$projectId'
+    | '/welcome/dashboard'
     | '/welcome/profile'
     | '/welcome/projects'
     | '/welcome/settings'
-    | '/projects'
-    | '/projects/$projectId/merger/$orgId'
+    | '/welcome/voice-clone'
+    | '/welcome/voice-library'
+    | '/welcome/voice-upload'
   id:
     | '__root__'
     | '/'
+    | '/forget-password'
+    | '/sign-in'
+    | '/sign-up'
     | '/welcome'
-    | '/projects/$projectId'
+    | '/welcome/dashboard'
     | '/welcome/profile'
     | '/welcome/projects'
     | '/welcome/settings'
-    | '/projects/'
-    | '/projects/$projectId/merger/$orgId'
+    | '/welcome/voice-clone'
+    | '/welcome/voice-library'
+    | '/welcome/voice-upload'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ForgetPasswordRoute: typeof ForgetPasswordRoute
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
   WelcomeRoute: typeof WelcomeRouteWithChildren
-  ProjectsProjectIdRoute: typeof ProjectsProjectIdRouteWithChildren
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ForgetPasswordRoute: ForgetPasswordRoute,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
   WelcomeRoute: WelcomeRouteWithChildren,
-  ProjectsProjectIdRoute: ProjectsProjectIdRouteWithChildren,
-  ProjectsIndexRoute: ProjectsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -255,27 +333,39 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/welcome",
-        "/projects/$projectId",
-        "/projects/"
+        "/forget-password",
+        "/sign-in",
+        "/sign-up",
+        "/welcome"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/forget-password": {
+      "filePath": "forget-password.tsx"
+    },
+    "/sign-in": {
+      "filePath": "sign-in.tsx"
+    },
+    "/sign-up": {
+      "filePath": "sign-up.tsx"
+    },
     "/welcome": {
       "filePath": "welcome.tsx",
       "children": [
+        "/welcome/dashboard",
         "/welcome/profile",
         "/welcome/projects",
-        "/welcome/settings"
+        "/welcome/settings",
+        "/welcome/voice-clone",
+        "/welcome/voice-library",
+        "/welcome/voice-upload"
       ]
     },
-    "/projects/$projectId": {
-      "filePath": "projects/$projectId.tsx",
-      "children": [
-        "/projects/$projectId/merger/$orgId"
-      ]
+    "/welcome/dashboard": {
+      "filePath": "welcome/dashboard.tsx",
+      "parent": "/welcome"
     },
     "/welcome/profile": {
       "filePath": "welcome/profile.tsx",
@@ -289,12 +379,17 @@ export const routeTree = rootRoute
       "filePath": "welcome/settings.tsx",
       "parent": "/welcome"
     },
-    "/projects/": {
-      "filePath": "projects/index.tsx"
+    "/welcome/voice-clone": {
+      "filePath": "welcome/voice-clone.tsx",
+      "parent": "/welcome"
     },
-    "/projects/$projectId/merger/$orgId": {
-      "filePath": "projects/$projectId/merger/$orgId.tsx",
-      "parent": "/projects/$projectId"
+    "/welcome/voice-library": {
+      "filePath": "welcome/voice-library.tsx",
+      "parent": "/welcome"
+    },
+    "/welcome/voice-upload": {
+      "filePath": "welcome/voice-upload.tsx",
+      "parent": "/welcome"
     }
   }
 }

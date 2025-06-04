@@ -1,6 +1,24 @@
 {
   "translation": {
     "project": "项目",
-    "start": "开始"
+    "start": "开始",
+    "create an account": "创建新用户",
+    "has an account": "已有账户",
+    "sign in title": "登录",
+    "sign in description": "输入您的用户名和密码",
+    "sign up": "注册",
+    "sign in": "登录",
+    "sign out": "退出",
+    "github": "Github",
+    "weibo": "Weibo",
+    "qq": "QQ",
+    "wechat": "Wechat",
+    "google": "Google",
+    "email": "邮箱",
+    "password": "密码",
+    "confirm password": "确认密码",
+    "forget password": "忘记密码",
+    "remember me": "记住我",
+    "agree to terms": "同意条款"
   }
 }

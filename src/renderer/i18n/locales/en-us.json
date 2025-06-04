@@ -1,6 +1,24 @@
 {
   "translation": {
     "project": "project",
-    "start": "start"
+    "start": "start",
+    "create an account": "Create an account",
+    "has an account": "Already have an account",
+    "sign in title": "Sign in",
+    "sign in description": "Enter your email and password to create an account.",
+    "sign up": "Sign up",
+    "sign in": "Sign in",
+    "sign out": "Sign out",
+    "github": "Github",
+    "weibo": "Weibo",
+    "qq": "QQ",
+    "wechat": "Wechat",
+    "google": "Google",
+    "email": "Email",
+    "password": "Password",
+    "confirm password": "Confirm password",
+    "forget password": "Forget password",
+    "remember me": "Remember me",
+    "agree to terms": "agree to terms"
   }
 }
