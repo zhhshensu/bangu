@@ -113,5 +113,14 @@ export default defineConfig(({ mode }) => {
         quoteStyle: "single",
       }),
     ],
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://localhost:9000",
+          changeOrigin: true,
+          // rewrite: (path) => path.replace(/^\/api/, ""),
+        },
+      },
+    },
   };
 });
