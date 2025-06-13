@@ -1,7 +1,5 @@
-import { ProjectService } from "@/renderer/services/ProjectService";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { OrgService } from "../../../services/OrgService";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
 import { Button, Modal, Spin } from "antd";
@@ -21,10 +19,10 @@ const ProjectList = ({ searchText, height }: ProjectListProps) => {
   const loadProjects = async () => {
     setLoading(true);
     try {
-      const data = await ProjectService.getAllProjects({
-        searchText,
-      });
-      setList(data || []);
+      // const data = await ProjectService.getAllProjects({
+      //   searchText,
+      // });
+      setList([]);
     } catch (error) {
       console.error("Failed to load projects:", error);
     } finally {
@@ -68,23 +66,6 @@ const ProjectList = ({ searchText, height }: ProjectListProps) => {
       okText: t("start"),
       onOk: async function () {
         try {
-          await OrgService.createOrg({
-            guid: nanoid(),
-            project_code: item.project_code,
-            project_name: item.project_name,
-            customer_name: item.project_name,
-            short_name: item.project_name,
-            audit_report_template: "",
-            create_at: dayjs().format("YYYY-MM-DD hh:mm:ss"),
-            create_user: "",
-            from_type: 1,
-            is_merge: true,
-            is_self_audit: true,
-            merge_type: 1,
-            report_type: "",
-            sjnd: 2025,
-            one_year_period_sdb_style: "",
-          });
           navigate({
             to: `/projects/${item.project_code}/basicInfo`,
           });
