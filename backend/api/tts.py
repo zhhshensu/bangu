@@ -3,65 +3,96 @@ import io
 import logging
 import scipy.io.wavfile as wav
 from fastapi import APIRouter, Form, HTTPException, UploadFile, File
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from services.tts_service import tts_service  # Import the tts_service instance
 from typing import Optional, List
+import shutil  # For file operations
+from pathlib import Path
+from datetime import datetime
+from models.voice import Voice  # 新增导入
+from tortoise.transactions import in_transaction  # 新增导入
 
-router = APIRouter(prefix="/tts", tags=["语音"])
+logging.basicConfig(level=logging.INFO)
+
+router = APIRouter(prefix="/tts", tags=["克隆"])
 
 
 @router.post("/synthesize")
 async def synthesize(
     text: str = Form(...),
-    speaker_wav: Optional[UploadFile] = File(None),  # 允许上传参考音频
-    language: Optional[str] = Form(None),  # 允许指定语言
-    speaker: Optional[str] = Form(None),  # 允许指定说话人（如果模型支持语音克隆）
+    prompt_text: Optional[str] = Form(None),  # 允许指定额外的文本提示
+    prompt_speech: Optional[UploadFile] = File(None),
+    prompt_speech_path: Optional[str] = Form(None),
+    voice_id: Optional[int] = Form(None),  # 新增参数
 ):
     """
     使用 TTS 模型将文本转换为语音，支持语音克隆。
+    如果提供voice_id，则将生成的语音路径写入voices表的result_file_path字段。
     """
-    print(f"Using text: {text}")
-    print(
-		f"Using speaker_wav: {speaker_wav}, language: {language}, speaker: {speaker}"
-	)
+    logging.info(f"Using text: {text}")
+    logging.info(f"Using prompt_text: {prompt_text}, prompt_speech: {prompt_speech}")
+    # Generate unique filename using timestamp
+    timestamp = datetime.now().strftime(
+        "%Y%m%d%H%M%S%f"
+    )  # Added %f for microsecond to ensure uniqueness
+    speech_path = prompt_speech_path
+    temp_speech_path = None  # 临时文件目录
     try:
-        speaker_wav_path = None
-        speaker_name = None
         # 处理上传的音频文件
-        if speaker_wav:
-            speaker_wav_bytes = await speaker_wav.read()
-            # 将上传的文件保存到临时文件
-            with open("temp_speaker.wav", "wb") as f:
-                f.write(speaker_wav_bytes)
-            speaker_wav_path = "temp_speaker.wav"
-        else:
-            speaker_wav_path = None
-        #
-        if speaker:
-            speaker_name = speaker  # 如果指定了说话人，则不使用上传的音频文件
-        else:
-            speaker_name = None
+        if prompt_speech:
+            # Save the uploaded file temporarily
+            temp_file_name = f"temp_{prompt_speech.filename}"
+            temp_speech_path = Path("temp_uploads") / temp_file_name
+            os.makedirs(
+                Path("temp_uploads"), exist_ok=True
+            )  # Ensure temp directory exists
+            with open(temp_speech_path, "wb") as buffer:
+                shutil.copyfileobj(prompt_speech.file, buffer)
+            speech_path = str(temp_speech_path)
+            logging.info(f"Prompt speech saved temporarily to: {speech_path}")
 
         # 文本转换为语音
         wav_output = tts_service.synthesize(
-            text=text, speaker_wav=speaker_wav_path, language=language, speaker=speaker
+            text=text, prompt_speech_path=speech_path, prompt_text=prompt_text
         )
 
-        # 将 NumPy 数组转换为 WAV 格式的字节流
-        wav_buffer = io.BytesIO()
+        # --- New code to save to results directory ---
+        results_dir = "./results"
+        os.makedirs(results_dir, exist_ok=True)
 
-        wav.write(wav_buffer, tts_service.sample_rate, wav_output)
-        wav_buffer.seek(0)
+        unique_filename = f"{timestamp}.wav"
+        file_path = os.path.join(results_dir, unique_filename)
 
-        # 删除临时文件
-        if speaker_wav_path:
-            os.remove(speaker_wav_path)
+        with open(file_path, "wb") as f:
+            f.write(wav_output)
+        logging.info(f"Synthesized audio saved to: {file_path}")
+        # --- End new code ---
+
+        # 新增：写入voices表
+        if voice_id is not None:
+            async with in_transaction():
+                voice = await Voice.filter(id=voice_id).first()
+                if voice:
+                    voice.result_file_path = file_path
+                    await voice.save()
+                    logging.info(
+                        f"Updated voice id={voice_id} with result_file_path={file_path}"
+                    )
+                else:
+                    logging.warning(
+                        f"Voice id={voice_id} not found, cannot update result_file_path."
+                    )
 
         # 返回语音数据
-        return StreamingResponse(wav_buffer, media_type="audio/wav")
+        return FileResponse(
+            path=file_path, media_type="audio/wav", filename=timestamp + ".wav"
+        )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if temp_speech_path and os.path.exists(temp_speech_path):
+            os.remove(temp_speech_path)  # Clean up the temporary file
 
 
 @router.get("/languages")

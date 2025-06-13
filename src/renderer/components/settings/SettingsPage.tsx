@@ -2,6 +2,7 @@ import { Button, Input, Switch, Typography, Space, Divider, Radio, List } from "
 import React, { useState } from "react";
 import { SaveOutlined, LockOutlined, RightOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { AuthService } from "@/renderer/services/authService";
 
 const { Title, Text } = Typography;
 
@@ -9,8 +10,9 @@ const SettingsPage: React.FC = () => {
   const [marketingEmail, setMarketingEmail] = useState(true);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = async () => {
+    await AuthService.logout();
+    localStorage.removeItem("access_token");
     navigate({
       to: "/sign-in",
     });
@@ -21,7 +23,7 @@ const SettingsPage: React.FC = () => {
       <Title level={4}>设置</Title>
 
       {/* 账户设置 */}
-      {/* <div style={{ marginBottom: 24, padding: 24, border: "1px solid #f0f0f0" }}>
+      <div style={{ marginBottom: 24, padding: 24, border: "1px solid #f0f0f0" }}>
         <Title level={4}>账户设置</Title>
         <Space direction="vertical" style={{ width: "100%" }}>
           <Text>用户名</Text>
@@ -37,7 +39,7 @@ const SettingsPage: React.FC = () => {
             保存更改
           </Button>
         </Space>
-      </div> */}
+      </div>
 
       {/* 通知设置 */}
       <div style={{ marginBottom: 24, padding: 24, border: "1px solid #f0f0f0" }}>
@@ -51,12 +53,12 @@ const SettingsPage: React.FC = () => {
             <Switch defaultChecked />
             <Text>接收应用内通知</Text>
           </Space>
-          <Space>
+          {/* <Space>
             <Radio.Group onChange={(e) => setMarketingEmail(e.target.value)} value={marketingEmail}>
               <Radio value={true}></Radio>
             </Radio.Group>
             <Text>接收营销邮件</Text>
-          </Space>
+          </Space> */}
         </Space>
       </div>
 
@@ -67,8 +69,7 @@ const SettingsPage: React.FC = () => {
           itemLayout="horizontal"
           dataSource={[
             { title: "两步验证", description: "", status: "已启用", icon: <LockOutlined /> },
-            { title: "数据使用政策", description: "", status: "", icon: null },
-            { title: "删除账户", description: "", status: "", icon: null },
+            { title: "数据使用政策", description: "", status: "已启用", icon: null },
           ]}
           renderItem={(item) => (
             <List.Item actions={[<RightOutlined />]}>
@@ -77,7 +78,7 @@ const SettingsPage: React.FC = () => {
                 title={<Text>{item.title}</Text>}
                 description={item.description}
               />
-              {item.status && <Text type="success">{item.status}</Text>}
+              {<Text type="success">{item.status}</Text>}
             </List.Item>
           )}
         />

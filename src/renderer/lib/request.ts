@@ -21,8 +21,10 @@ const instance = axios.create({
 });
 instance.interceptors.request.use(
   (config) => {
-    config.headers["access_token"] = getToken(); // 请求头携带 token
-    config.headers["content-type"] = "application/json"; // 默认类型
+    const token = getToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${getToken()}`; // 请求头携带 token
+    }
     return config;
   },
   (error) => {
@@ -32,13 +34,25 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
-    return response.data;
+    // If the response data is a Blob, return the entire response object
+    // so that headers (like content-disposition) can be accessed.
+    if (response.data instanceof Blob) {
+      return response;
+    }
+    if (response.data.code && response.data.code !== 20000) {
+      message.error({
+        content: response.data.message || "请求失败",
+        duration: 3,
+      });
+      return Promise.reject(response.data);
+    }
+    return response.data.data;
   },
   (error) => {
     if (
       error.response &&
       error.response?.status === 401 &&
-      !error.config.url.includes("/user/login")
+      !error.config.url.includes("/auth/login")
     ) {
       const { config } = error;
       if (!isRefreshing) {
@@ -88,6 +102,11 @@ instance.interceptors.response.use(
         notification.error({
           message: "请求超时",
         });
+      } else if (error.response) {
+        // For other server errors (non-401, non-blob)
+        notification.error({
+          message: error.response.data?.message || "服务器异常",
+        });
       } else {
         notification.error({
           message: "服务器异常",
@@ -99,3 +118,48 @@ instance.interceptors.response.use(
 );
 
 export const request = instance;
+
+/**
+ * 下载文件，处理 Blob 响应和 content-disposition 头部
+ * @param response axios 响应对象
+ */
+export function downloadFile(response: any) {
+  const contentType = response.headers["content-type"] || "";
+  if (response.data instanceof Blob) {
+    const contentDisposition = response.headers["content-disposition"];
+    let filename = "download"; // 默认文件名
+
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename\*?=[^;]+?''([^;]+)/);
+      if (filenameMatch && filenameMatch[1]) {
+        try {
+          filename = decodeURIComponent(filenameMatch[1]);
+        } catch (e) {
+          console.error("Error decoding filename from content-disposition", e);
+          // Fallback to simpler regex if decoding fails
+          const simpleFilenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+          if (simpleFilenameMatch && simpleFilenameMatch[1]) {
+            filename = simpleFilenameMatch[1];
+          }
+        }
+      } else {
+        const simpleFilenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+        if (simpleFilenameMatch && simpleFilenameMatch[1]) {
+          filename = simpleFilenameMatch[1];
+        }
+      }
+    }
+
+    // Create a Blob URL
+    const url = window.URL.createObjectURL(new Blob([response.data], { type: contentType }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url); // Clean up the URL
+    return true;
+  }
+  return false;
+}

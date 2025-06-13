@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Union
 from tortoise.queryset import Q
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 # 认证用户
 async def authenticate_user(login_identifier: str, password: str) -> Union[User, None]:
 	#通过 username, email 或 phone 查找用户
@@ -24,6 +24,6 @@ async def authenticate_user(login_identifier: str, password: str) -> Union[User,
 def create_token_response(user: User):
 	access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 	access_token = create_access_token(
-		data={"sub": username}, expires_delta=access_token_expires
+		data={"sub": user.id}, expires_delta=access_token_expires
 	)
 	return {"access_token": access_token, "token_type": "bearer"}

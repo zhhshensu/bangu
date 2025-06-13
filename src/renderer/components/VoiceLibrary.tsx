@@ -1,24 +1,21 @@
-import { Row, Col, Button, Card, Input, Space, Typography, message } from "antd";
-import React, { useState } from "react";
+import { Row, Col, Button, Card, Input, Space, Typography, App } from "antd";
+import React, { useMemo, useState } from "react";
+import useVoice from "../hooks/useVoice";
+import { VoiceListItem, VoiceService } from "../services/VoiceService";
 
 const { Search } = Input;
 const { Title, Text } = Typography;
 
-interface VoiceItemProps {
-  id: string;
-  name: string;
-  description: string;
-  timeAgo: string;
-  onListen: (id: string) => void;
-  onTTS: (id: string) => void;
-  onDelete: (id: string) => void;
+interface VoiceItemProps extends VoiceListItem {
+  onListen: (id: string | number) => void;
+  onTTS: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
 }
 
 const VoiceItem: React.FC<VoiceItemProps> = ({
   id,
-  name,
+  original_filename,
   description,
-  timeAgo,
   onListen,
   onTTS,
   onDelete,
@@ -30,20 +27,19 @@ const VoiceItem: React.FC<VoiceItemProps> = ({
       <Button type="link" onClick={() => onListen(id)}>
         试听
       </Button>,
-      <Button type="link" onClick={() => onTTS(id)}>
-        TTS
-      </Button>,
+      // <Button type="link" onClick={() => onTTS(id)}>
+      //   TTS
+      // </Button>,
       <Button type="link" danger onClick={() => onDelete(id)}>
         删除
       </Button>,
     ]}
   >
     <Card.Meta
-      title={<Text strong>{name}</Text>}
+      title={<Text strong>{original_filename}</Text>}
       description={
         <Space direction="vertical">
           <Text type="secondary">{description}</Text>
-          <Text type="secondary">{timeAgo}</Text>
         </Space>
       }
     />
@@ -51,60 +47,71 @@ const VoiceItem: React.FC<VoiceItemProps> = ({
 );
 
 const VoiceLibrary: React.FC = () => {
-  const [voiceList, setVoiceList] = useState([
-    {
-      id: "1",
-      name: "我的专属声音 V2",
-      description: "基于最新录音, 效果极佳.",
-      timeAgo: "2小时前",
-    },
-    {
-      id: "2",
-      name: "项目演示声音",
-      description: "用于产品演示的通用女声.",
-      timeAgo: "3天前",
-    },
-    {
-      id: "3",
-      name: "英文播客声音",
-      description: "克隆自一段英文播客素材.",
-      timeAgo: "1周前",
-    },
-  ]);
+  const { message, modal, notification } = App.useApp();
+  const { voices: voiceList, total: voicesTotal, setVoices: setVoiceList } = useVoice();
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const handleSearch = (value: string) => {
-    message.info(`搜索: ${value}`);
-    // In a real app, you'd filter the list based on the search value
+    setSearchValue(value);
   };
 
-  const handleListen = (id: string) => {
+  const handleListen = (id: string | number) => {
     message.info(`试听语音: ${id}`);
     // Implement audio playback logic here
   };
 
-  const handleTTS = (id: string) => {
+  const handleTTS = (id: string | number) => {
     message.info(`TTS for voice: ${id}`);
     // Implement TTS functionality here
   };
 
-  const handleDelete = (id: string) => {
-    message.success(`删除语音: ${id}`);
-    setVoiceList((prevList) => prevList.filter((voice) => voice.id !== id));
+  const handleDelete = async (id: string | number) => {
+    if (!id) {
+      message.error("语音ID不能为空");
+      return;
+    }
+    modal.confirm({
+      title: "确认删除",
+      content: "确定要删除此语音吗？",
+      onOk: async () => {
+        try {
+          await VoiceService.delete(id);
+          setVoiceList((prevList) => prevList.filter((voice) => voice.id !== id));
+          message.success("删除语音成功");
+        } catch (error) {
+          message.error(`删除语音失败: ${error}`);
+        }
+      },
+      onCancel() {},
+    });
   };
+
+  const filteredVoices = useMemo(() => {
+    return voiceList.filter((voice: VoiceListItem) => {
+      return (
+        !searchValue || voice?.original_filename?.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    });
+  }, [voiceList, searchValue]);
 
   return (
     <div style={{ padding: 24 }}>
       <Title level={4}>声音库</Title>
 
       <Space style={{ width: "100%", marginBottom: 24 }}>
-        <Search placeholder="搜索声音名称..." onSearch={handleSearch} style={{ flex: 1 }} />
-        <Button type="primary">搜索</Button>
+        <Search
+          placeholder="搜索声音名称..."
+          enterButton="搜索"
+          onSearch={handleSearch}
+          style={{ flex: 1 }}
+        />
+        {/* <Button type="primary">搜索</Button> */}
       </Space>
 
       <div>
-        {voiceList.length > 0 ? (
+        {filteredVoices.length > 0 ? (
           <Row gutter={16} style={{ marginBottom: "24px" }}>
-            {voiceList.map((voice, index) => (
+            {filteredVoices.map((voice, index) => (
               <Col span={8} key={index}>
                 <VoiceItem
                   key={voice.id}

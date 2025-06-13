@@ -3,15 +3,24 @@ import { GithubOutlined, GoogleOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
+import { AuthService } from "@/renderer/services/authService";
+import { setToken } from "@/renderer/lib/auth";
 
 const { Title, Text, Link } = Typography;
 
 const SignIn: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
+    const data: any = await AuthService.login(values);
+    if (!data || !data?.access_token) {
+      // Handle login failure
+      console.error("Login failed");
+      return;
+    }
     // Handle login logic here
+    setToken(data?.access_token);
     navigate({ to: "/welcome" });
   };
 
@@ -46,7 +55,7 @@ const SignIn: React.FC = () => {
         <Form name="login" initialValues={{ remember: true }} onFinish={onFinish} layout="vertical">
           <Form.Item
             label={t("email")}
-            name="email"
+            name="username"
             rules={[{ required: true, message: "Please input your Email!", type: "email" }]}
           >
             <Input placeholder="name@example.com" />
@@ -74,7 +83,7 @@ const SignIn: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-        <Divider plain>OR CONTINUE WITH</Divider>
+        {/* <Divider plain>OR CONTINUE WITH</Divider>
         <Flex style={{ width: "100%" }} justify="space-around" gap={16}>
           <Button block icon={<GithubOutlined />}>
             {t("github")}
@@ -82,7 +91,7 @@ const SignIn: React.FC = () => {
           <Button block icon={<GoogleOutlined />}>
             {t("google")}
           </Button>
-        </Flex>
+        </Flex> */}
         <Text type="secondary" style={{ marginTop: 24, display: "block", fontSize: "0.85em" }}>
           By clicking login, you agree to our <Link>Terms of Service</Link> and{" "}
           <Link>Privacy Policy</Link>.

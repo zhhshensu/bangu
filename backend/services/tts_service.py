@@ -1,84 +1,125 @@
-import torch
+from typing import Optional
+import requests
 import logging
 import os
-from TTS.api import TTS
+from fastapi import UploadFile
+
+logging.basicConfig(level=logging.INFO)
 
 
 class TTSService:
     def __init__(self):
-        # 加载 TTS 模型
-
-        try:
-            model_name = "tts_models/multilingual/multi-dataset/xtts_v2"
-            # model_name = "tts_models/zh-CN/baker/tacotron2-DDC-GST"  # y更换为中文模型
-            logging.info(f"cuda is available: {os.path.exists('/dev/nvidia0')}")
-            self.tts = TTS(model_name=model_name).to(
-                "cuda" if os.path.exists("/dev/nvidia0") else "cpu"
-            )  # 根据 GPU 可用性自动选择设备
-            logging.info(f"TTS model {model_name} loaded successfully.")
-        except Exception as e:
-            raise Exception(f"Failed to load TTS model: {e}")
+        self.spark_tts_base_url = os.getenv("SPARK_TTS_URL", "http://localhost:9001")
+        self.synthesize_endpoint = f"{self.spark_tts_base_url}/tts/clone"
+        self.languages_endpoint = f"{self.spark_tts_base_url}/languages"
+        self.speakers_endpoint = f"{self.spark_tts_base_url}/speakers"
+        self.speaker_info_endpoint = f"{self.spark_tts_base_url}/speakers"
+        self.model_name_endpoint = f"{self.spark_tts_base_url}/model_name"
+        logging.info(
+            f"Initialized TTSService for Spark-TTS at {self.spark_tts_base_url}"
+        )
 
     def synthesize(
         self,
         text: str,
-        speaker_wav: str = None,
-        language: str = "zh-cn",
-        speaker: str = None,
+        prompt_speech_path: str = None,
+        prompt_text: str = None,
     ):
         """
-        使用 TTS 模型将文本转换为语音。
-        speaker_wav: 参考音频文件路径，用于语音克隆。
-        language: 目标语言，如果未提供，则尝试自动检测。
+        使用 Spark-TTS 服务将文本转换为语音。
+        prompt_speech_path: 参考音频文件路径，用于语音克隆。
+        prompt_text: 额外的文本提示。
         """
         try:
-            # 文本转换为语音
-            wav_output = self.tts.tts(
-                text=text, speaker=speaker
-            )
-            return wav_output
+            data = {"text": text}
+            files = {}
+
+            if prompt_text:
+                data["prompt_text"] = prompt_text
+
+            if prompt_speech_path:
+                # 检查文件是否存在
+                with open(prompt_speech_path, "rb") as f:
+                    files["prompt_speech"] = (
+                        os.path.basename(prompt_speech_path),
+                        f.read(),
+                        "audio/wav",
+                    )
+            response = requests.post(self.synthesize_endpoint, data=data, files=files)
+            response.raise_for_status()
+            return response.content
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Error calling Spark-TTS synthesize service: {e}")
         except Exception as e:
-            raise Exception(f"Failed to synthesize: {e}")
+            raise Exception(f"Failed to synthesize speech with Spark-TTS: {e}")
 
     def get_languages(self):
         """
-        获取 TTS 模型支持的语言列表。
+        获取 Spark-TTS 服务支持的语言列表。
         """
         try:
-            return self.tts.languages
+            response = requests.get(self.languages_endpoint)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logging.warning(
+                f"Could not retrieve languages from Spark-TTS: {e}. Returning empty list."
+            )
+            return []
         except Exception as e:
-            raise Exception(f"Failed to get languages: {e}")
+            raise Exception(f"Failed to get languages from Spark-TTS: {e}")
 
     def get_speakers(self):
         """
-        获取 TTS 模型支持的语音列表。
+        获取 Spark-TTS 服务支持的语音列表。
         """
         try:
-            return self.tts.speakers
+            response = requests.get(self.speakers_endpoint)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logging.warning(
+                f"Could not retrieve speakers from Spark-TTS: {e}. Returning empty list."
+            )
+            return []
         except Exception as e:
-            raise Exception(f"Failed to get languages: {e}")
+            raise Exception(f"Failed to get speakers from Spark-TTS: {e}")
 
     def get_speaker_info(self, speaker_name: str):
         """
         获取指定说话人的信息。
         """
         try:
-            if speaker_name in self.tts.speakers:
-                return {"speaker_name": speaker_name}
+            response = requests.get(f"{self.speaker_info_endpoint}/{speaker_name}")
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logging.warning(
+                f"Could not retrieve speaker info for {speaker_name} from Spark-TTS: {e}. Returning None."
+            )
             return None
         except Exception as e:
-            raise Exception(f"Failed to get speaker info: {e}")
+            raise Exception(f"Failed to get speaker info from Spark-TTS: {e}")
+
+    def get_model_name(self):
+        """
+        获取当前使用的模型名称 (Spark-TTS)。
+        """
+        try:
+            response = requests.get(self.model_name_endpoint)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logging.warning(
+                f"Could not retrieve model name from Spark-TTS: {e}. Returning default."
+            )
+            return {"model_name": "Spark-TTS Service"}
+        except Exception as e:
+            raise Exception(f"Failed to get model name from Spark-TTS: {e}")
 
     @property
     def sample_rate(self):
-        if hasattr(self.tts, "synthesizer") and hasattr(
-            self.tts.synthesizer, "output_sample_rate"
-        ):
-            return self.tts.synthesizer.output_sample_rate
-        elif hasattr(self.tts, "output_sample_rate"):
-            return self.tts.output_sample_rate
-        else:
-            return 24000  # fallback
+        return 22050
 
 
 # 创建 TTSService 实例 (全局单例)

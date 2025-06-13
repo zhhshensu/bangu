@@ -1,4 +1,4 @@
-import '@ant-design/v5-patch-for-react-19';
+import "@ant-design/v5-patch-for-react-19";
 import "./i18n/config";
 import { RouterProvider, createRouter, createHashHistory, redirect } from "@tanstack/react-router";
 import { createRoot } from "react-dom/client";
