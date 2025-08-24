@@ -41,7 +41,7 @@ const SignIn: React.FC = () => {
           borderRadius: 8,
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
           width: 400,
-          textAlign: "center",
+          // textAlign: "center",
         }}
       >
         {/* <img src="/path/to/your/logo.svg" alt="Shadcn Admin" style={{ height: 40, marginBottom: 24 }} /> */}{" "}
@@ -52,11 +52,22 @@ const SignIn: React.FC = () => {
         <Text type="secondary" style={{ marginBottom: 24, display: "block" }}>
           {t("sign in description")}
         </Text>
-        <Form name="login" initialValues={{ remember: true }} onFinish={onFinish} layout="vertical">
+        <Form
+          name="login"
+          initialValues={{ username: "name@example.com", password: "12345678", remember: true }}
+          onFinish={onFinish}
+          layout="vertical"
+        >
           <Form.Item
             label={t("email")}
             name="username"
-            rules={[{ required: true, message: "Please input your Email!", type: "email" }]}
+            rules={[
+              {
+                required: true,
+                message: "请输入邮箱",
+                type: "email",
+              },
+            ]}
           >
             <Input placeholder="name@example.com" />
           </Form.Item>
@@ -72,7 +83,7 @@ const SignIn: React.FC = () => {
             }
             labelCol={{ span: 24 }}
             name="password"
-            rules={[{ required: true, message: "Please input your Password!" }]}
+            rules={[{ required: true, message: "请输入密码" }]}
           >
             <Input.Password />
           </Form.Item>
