@@ -63,3 +63,6 @@ tests/results/
 npm-debug.log
 npm-debug.log.*
 vite-plugin-electron.log
+
+# 环境变量
+.env

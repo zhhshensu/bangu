@@ -11,169 +11,315 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as LayoutIndexImport } from './routes/_layout/index'
-import { Route as LayoutUserImport } from './routes/_layout/user'
-import { Route as LayoutSettingsImport } from './routes/_layout/settings'
-import { Route as LayoutProfileImport } from './routes/_layout/profile'
-import { Route as LayoutAdminImport } from './routes/_layout/admin'
+import { Route as WelcomeImport } from './routes/welcome'
+import { Route as SignUpImport } from './routes/sign-up'
+import { Route as SignInImport } from './routes/sign-in'
+import { Route as ForgetPasswordImport } from './routes/forget-password'
+import { Route as IndexImport } from './routes/index'
+import { Route as WelcomeVoiceUploadImport } from './routes/welcome/voice-upload'
+import { Route as WelcomeVoiceLibraryImport } from './routes/welcome/voice-library'
+import { Route as WelcomeVoiceCloneImport } from './routes/welcome/voice-clone'
+import { Route as WelcomeSettingsImport } from './routes/welcome/settings'
+import { Route as WelcomeProjectsImport } from './routes/welcome/projects'
+import { Route as WelcomeProfileImport } from './routes/welcome/profile'
+import { Route as WelcomeDashboardImport } from './routes/welcome/dashboard'
 
 // Create/Update Routes
 
-const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
+const WelcomeRoute = WelcomeImport.update({
+  id: '/welcome',
+  path: '/welcome',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutIndexRoute = LayoutIndexImport.update({
+const SignUpRoute = SignUpImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SignInRoute = SignInImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ForgetPasswordRoute = ForgetPasswordImport.update({
+  id: '/forget-password',
+  path: '/forget-password',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutUserRoute = LayoutUserImport.update({
-  id: '/user',
-  path: '/user',
-  getParentRoute: () => LayoutRoute,
+const WelcomeVoiceUploadRoute = WelcomeVoiceUploadImport.update({
+  id: '/voice-upload',
+  path: '/voice-upload',
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
-const LayoutSettingsRoute = LayoutSettingsImport.update({
+const WelcomeVoiceLibraryRoute = WelcomeVoiceLibraryImport.update({
+  id: '/voice-library',
+  path: '/voice-library',
+  getParentRoute: () => WelcomeRoute,
+} as any)
+
+const WelcomeVoiceCloneRoute = WelcomeVoiceCloneImport.update({
+  id: '/voice-clone',
+  path: '/voice-clone',
+  getParentRoute: () => WelcomeRoute,
+} as any)
+
+const WelcomeSettingsRoute = WelcomeSettingsImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
-const LayoutProfileRoute = LayoutProfileImport.update({
+const WelcomeProjectsRoute = WelcomeProjectsImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => WelcomeRoute,
+} as any)
+
+const WelcomeProfileRoute = WelcomeProfileImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
-const LayoutAdminRoute = LayoutAdminImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => LayoutRoute,
+const WelcomeDashboardRoute = WelcomeDashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => WelcomeRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/admin': {
-      id: '/_layout/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof LayoutAdminImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/profile': {
-      id: '/_layout/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof LayoutProfileImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/settings': {
-      id: '/_layout/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof LayoutSettingsImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/user': {
-      id: '/_layout/user'
-      path: '/user'
-      fullPath: '/user'
-      preLoaderRoute: typeof LayoutUserImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexImport
-      parentRoute: typeof LayoutImport
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/forget-password': {
+      id: '/forget-password'
+      path: '/forget-password'
+      fullPath: '/forget-password'
+      preLoaderRoute: typeof ForgetPasswordImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpImport
+      parentRoute: typeof rootRoute
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeImport
+      parentRoute: typeof rootRoute
+    }
+    '/welcome/dashboard': {
+      id: '/welcome/dashboard'
+      path: '/dashboard'
+      fullPath: '/welcome/dashboard'
+      preLoaderRoute: typeof WelcomeDashboardImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/profile': {
+      id: '/welcome/profile'
+      path: '/profile'
+      fullPath: '/welcome/profile'
+      preLoaderRoute: typeof WelcomeProfileImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/projects': {
+      id: '/welcome/projects'
+      path: '/projects'
+      fullPath: '/welcome/projects'
+      preLoaderRoute: typeof WelcomeProjectsImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/settings': {
+      id: '/welcome/settings'
+      path: '/settings'
+      fullPath: '/welcome/settings'
+      preLoaderRoute: typeof WelcomeSettingsImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/voice-clone': {
+      id: '/welcome/voice-clone'
+      path: '/voice-clone'
+      fullPath: '/welcome/voice-clone'
+      preLoaderRoute: typeof WelcomeVoiceCloneImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/voice-library': {
+      id: '/welcome/voice-library'
+      path: '/voice-library'
+      fullPath: '/welcome/voice-library'
+      preLoaderRoute: typeof WelcomeVoiceLibraryImport
+      parentRoute: typeof WelcomeImport
+    }
+    '/welcome/voice-upload': {
+      id: '/welcome/voice-upload'
+      path: '/voice-upload'
+      fullPath: '/welcome/voice-upload'
+      preLoaderRoute: typeof WelcomeVoiceUploadImport
+      parentRoute: typeof WelcomeImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface LayoutRouteChildren {
-  LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutProfileRoute: typeof LayoutProfileRoute
-  LayoutSettingsRoute: typeof LayoutSettingsRoute
-  LayoutUserRoute: typeof LayoutUserRoute
-  LayoutIndexRoute: typeof LayoutIndexRoute
+interface WelcomeRouteChildren {
+  WelcomeDashboardRoute: typeof WelcomeDashboardRoute
+  WelcomeProfileRoute: typeof WelcomeProfileRoute
+  WelcomeProjectsRoute: typeof WelcomeProjectsRoute
+  WelcomeSettingsRoute: typeof WelcomeSettingsRoute
+  WelcomeVoiceCloneRoute: typeof WelcomeVoiceCloneRoute
+  WelcomeVoiceLibraryRoute: typeof WelcomeVoiceLibraryRoute
+  WelcomeVoiceUploadRoute: typeof WelcomeVoiceUploadRoute
 }
 
-const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutAdminRoute: LayoutAdminRoute,
-  LayoutProfileRoute: LayoutProfileRoute,
-  LayoutSettingsRoute: LayoutSettingsRoute,
-  LayoutUserRoute: LayoutUserRoute,
-  LayoutIndexRoute: LayoutIndexRoute,
+const WelcomeRouteChildren: WelcomeRouteChildren = {
+  WelcomeDashboardRoute: WelcomeDashboardRoute,
+  WelcomeProfileRoute: WelcomeProfileRoute,
+  WelcomeProjectsRoute: WelcomeProjectsRoute,
+  WelcomeSettingsRoute: WelcomeSettingsRoute,
+  WelcomeVoiceCloneRoute: WelcomeVoiceCloneRoute,
+  WelcomeVoiceLibraryRoute: WelcomeVoiceLibraryRoute,
+  WelcomeVoiceUploadRoute: WelcomeVoiceUploadRoute,
 }
 
-const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
+const WelcomeRouteWithChildren =
+  WelcomeRoute._addFileChildren(WelcomeRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof LayoutRouteWithChildren
-  '/admin': typeof LayoutAdminRoute
-  '/profile': typeof LayoutProfileRoute
-  '/settings': typeof LayoutSettingsRoute
-  '/user': typeof LayoutUserRoute
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/forget-password': typeof ForgetPasswordRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/welcome': typeof WelcomeRouteWithChildren
+  '/welcome/dashboard': typeof WelcomeDashboardRoute
+  '/welcome/profile': typeof WelcomeProfileRoute
+  '/welcome/projects': typeof WelcomeProjectsRoute
+  '/welcome/settings': typeof WelcomeSettingsRoute
+  '/welcome/voice-clone': typeof WelcomeVoiceCloneRoute
+  '/welcome/voice-library': typeof WelcomeVoiceLibraryRoute
+  '/welcome/voice-upload': typeof WelcomeVoiceUploadRoute
 }
 
 export interface FileRoutesByTo {
-  '/admin': typeof LayoutAdminRoute
-  '/profile': typeof LayoutProfileRoute
-  '/settings': typeof LayoutSettingsRoute
-  '/user': typeof LayoutUserRoute
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/forget-password': typeof ForgetPasswordRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/welcome': typeof WelcomeRouteWithChildren
+  '/welcome/dashboard': typeof WelcomeDashboardRoute
+  '/welcome/profile': typeof WelcomeProfileRoute
+  '/welcome/projects': typeof WelcomeProjectsRoute
+  '/welcome/settings': typeof WelcomeSettingsRoute
+  '/welcome/voice-clone': typeof WelcomeVoiceCloneRoute
+  '/welcome/voice-library': typeof WelcomeVoiceLibraryRoute
+  '/welcome/voice-upload': typeof WelcomeVoiceUploadRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_layout': typeof LayoutRouteWithChildren
-  '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/profile': typeof LayoutProfileRoute
-  '/_layout/settings': typeof LayoutSettingsRoute
-  '/_layout/user': typeof LayoutUserRoute
-  '/_layout/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/forget-password': typeof ForgetPasswordRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/welcome': typeof WelcomeRouteWithChildren
+  '/welcome/dashboard': typeof WelcomeDashboardRoute
+  '/welcome/profile': typeof WelcomeProfileRoute
+  '/welcome/projects': typeof WelcomeProjectsRoute
+  '/welcome/settings': typeof WelcomeSettingsRoute
+  '/welcome/voice-clone': typeof WelcomeVoiceCloneRoute
+  '/welcome/voice-library': typeof WelcomeVoiceLibraryRoute
+  '/welcome/voice-upload': typeof WelcomeVoiceUploadRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/admin' | '/profile' | '/settings' | '/user' | '/'
+  fullPaths:
+    | '/'
+    | '/forget-password'
+    | '/sign-in'
+    | '/sign-up'
+    | '/welcome'
+    | '/welcome/dashboard'
+    | '/welcome/profile'
+    | '/welcome/projects'
+    | '/welcome/settings'
+    | '/welcome/voice-clone'
+    | '/welcome/voice-library'
+    | '/welcome/voice-upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/admin' | '/profile' | '/settings' | '/user' | '/'
+  to:
+    | '/'
+    | '/forget-password'
+    | '/sign-in'
+    | '/sign-up'
+    | '/welcome'
+    | '/welcome/dashboard'
+    | '/welcome/profile'
+    | '/welcome/projects'
+    | '/welcome/settings'
+    | '/welcome/voice-clone'
+    | '/welcome/voice-library'
+    | '/welcome/voice-upload'
   id:
     | '__root__'
-    | '/_layout'
-    | '/_layout/admin'
-    | '/_layout/profile'
-    | '/_layout/settings'
-    | '/_layout/user'
-    | '/_layout/'
+    | '/'
+    | '/forget-password'
+    | '/sign-in'
+    | '/sign-up'
+    | '/welcome'
+    | '/welcome/dashboard'
+    | '/welcome/profile'
+    | '/welcome/projects'
+    | '/welcome/settings'
+    | '/welcome/voice-clone'
+    | '/welcome/voice-library'
+    | '/welcome/voice-upload'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  LayoutRoute: typeof LayoutRouteWithChildren
+  IndexRoute: typeof IndexRoute
+  ForgetPasswordRoute: typeof ForgetPasswordRoute
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
+  WelcomeRoute: typeof WelcomeRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRoute: LayoutRouteWithChildren,
+  IndexRoute: IndexRoute,
+  ForgetPasswordRoute: ForgetPasswordRoute,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
+  WelcomeRoute: WelcomeRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -186,38 +332,64 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_layout"
+        "/",
+        "/forget-password",
+        "/sign-in",
+        "/sign-up",
+        "/welcome"
       ]
     },
-    "/_layout": {
-      "filePath": "_layout.tsx",
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/forget-password": {
+      "filePath": "forget-password.tsx"
+    },
+    "/sign-in": {
+      "filePath": "sign-in.tsx"
+    },
+    "/sign-up": {
+      "filePath": "sign-up.tsx"
+    },
+    "/welcome": {
+      "filePath": "welcome.tsx",
       "children": [
-        "/_layout/admin",
-        "/_layout/profile",
-        "/_layout/settings",
-        "/_layout/user",
-        "/_layout/"
+        "/welcome/dashboard",
+        "/welcome/profile",
+        "/welcome/projects",
+        "/welcome/settings",
+        "/welcome/voice-clone",
+        "/welcome/voice-library",
+        "/welcome/voice-upload"
       ]
     },
-    "/_layout/admin": {
-      "filePath": "_layout/admin.tsx",
-      "parent": "/_layout"
+    "/welcome/dashboard": {
+      "filePath": "welcome/dashboard.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/profile": {
-      "filePath": "_layout/profile.tsx",
-      "parent": "/_layout"
+    "/welcome/profile": {
+      "filePath": "welcome/profile.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/settings": {
-      "filePath": "_layout/settings.tsx",
-      "parent": "/_layout"
+    "/welcome/projects": {
+      "filePath": "welcome/projects.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/user": {
-      "filePath": "_layout/user.tsx",
-      "parent": "/_layout"
+    "/welcome/settings": {
+      "filePath": "welcome/settings.tsx",
+      "parent": "/welcome"
     },
-    "/_layout/": {
-      "filePath": "_layout/index.tsx",
-      "parent": "/_layout"
+    "/welcome/voice-clone": {
+      "filePath": "welcome/voice-clone.tsx",
+      "parent": "/welcome"
+    },
+    "/welcome/voice-library": {
+      "filePath": "welcome/voice-library.tsx",
+      "parent": "/welcome"
+    },
+    "/welcome/voice-upload": {
+      "filePath": "welcome/voice-upload.tsx",
+      "parent": "/welcome"
     }
   }
 }

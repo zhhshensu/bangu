@@ -1,0 +1,32 @@
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+:root {
+  --background-page-background-web: #fcfcfc;
+  --background-left-navigation: #ededed;
+  --background-left-navigation-web: #f7f9fd;
+  --lucide-icon-width: 18px;
+  --lucide-icon-height: 18px;
+
+  --sidebar-primary: #cc0033;
+  --sidebar-text: #4a4a4a;
+  --sidebar-icon: #666;
+  --sidebar-hover-bg: rgba(204, 0, 51, 0.08);
+  --sidebar-active-bg: rgba(204, 0, 51, 0.12);
+  --sidebar-active-text: #cc0033;
+
+  --border-color: #cc0033
+}
+
+.lucide {
+  width: var(--lucide-icon-width);
+  height: var(--lucide-icon-height);
+  stroke-width: 1px;
+}
+.ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
